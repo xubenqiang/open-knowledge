@@ -56,6 +56,7 @@ import { scanGlobalInPlaceSkillsAsync, scanInPlaceSkills } from './in-place-skil
 import { buildIngressPolicy, ExposureConsentError } from './ingress-policy.ts';
 import { resolveLocalSinkConfig } from './local-sink-resolver.ts';
 import { getLogger, loggerFactory, type PinoLogger } from './logger.ts';
+import { mcpHttpLimitsFromEnv } from './mcp-http-limits.ts';
 import { createMcpHttpHandler } from './mcp-http.ts';
 import { mountMcpAndApi, type ReadinessState } from './mcp-mount.ts';
 import { MissingOkConfigError } from './missing-ok-config-error.ts';
@@ -468,6 +469,7 @@ async function bootServerInner(
         getServerUrl: () => internalBaseUrl(),
         localApi: serverInstance.localApi,
         log,
+        ...mcpHttpLimitsFromEnv(),
       });
 
   const httpServer = createHttpServer();

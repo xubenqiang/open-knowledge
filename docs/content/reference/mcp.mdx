@@ -213,6 +213,10 @@ Read and write tools return a `previewUrl` for any doc they touched, but **those
 
 `preview_url` always carries an `autoOpen` boolean (top-level on its response) reflecting the user's [`appearance.preview.autoOpen`](./configuration.mdx) preference. The write tools (`write`, `edit`) carry the same boolean on the `warning` object, which fires only when no browser is attached to the preview. In the common case (a browser is attached), the write response has no `warning` and no `autoOpen` field. Agents honor `autoOpen` before navigating: `true` (default) follows the host-capability routing in the bundled skill; `false` means the user is managing their own preview window, so the agent surfaces the URL on request but does not open or refresh anything. The value is resolved fresh on every tool call, so a mid-session toggle propagates within 0–1 calls, with no client restart.
 
+## Session limits
+
+Each MCP HTTP client opens a session with `initialize`. The server keeps at most `100` sessions at once and closes one after 30 minutes without traffic. A client that arrives at the cap gets `503 Too many active MCP sessions` on `initialize` until an idle session expires; other requests keep working and the server stays healthy. A client that is done can release its slot immediately with `DELETE /mcp` and the `mcp-session-id` header. Raise or lower both limits with `OK_MCP_MAX_SESSIONS` and `OK_MCP_SESSION_TTL_MS` (see [Configuration](./configuration.mdx#environment-variables)).
+
 ## Refresh agent guidance
 
 Update the OpenKnowledge build that serves your MCP connection. If you use the desktop app, update that app; on macOS, the CLI can use its bundled server and skills, so updating only the npm package can leave the desktop's older guidance in use. For a standalone CLI installation, update the CLI.

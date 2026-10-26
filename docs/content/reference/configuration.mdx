@@ -148,6 +148,8 @@ Most users never set these — the schema settings above cover the common cases.
 | `OK_BUG_REPORT_INTAKE_URL` | Base URL of the intake the desktop app uploads to: reports sent from **Help → Report a bug…**, and images attached to the feedback form. Defaults to `https://openknowledge.ai`. Must be `https:` — plain `http:` is accepted only for loopback hosts (local testing). |
 | `OK_FEEDBACK_INTAKE_ORIGIN` | Origin the optional [uninstall feedback](/docs/reference/what-open-knowledge-writes#what-leaves-your-machine) submission posts to (default `https://openknowledge.ai`). Must be `https:` — plain `http:` is accepted only for loopback hosts (local testing). An unusable value drops the submission rather than falling back to the default. |
 | `OK_EMBEDDINGS_API_KEY` | Fallback embeddings key for [semantic search](#semantic-search), used when no project key is stored **and only for the default OpenAI endpoint** (a machine-wide env key is never sent to a custom host). Prefer `ok embeddings set-key` for normal use; the env var is convenient for CI / scripted runs against OpenAI. |
+| `OK_MCP_MAX_SESSIONS` | Concurrent MCP HTTP sessions the server keeps before it refuses a new `initialize` with `503 Too many active MCP sessions` (default `100`). Raise it for a shared server where clients open a session per task, or lower it to bound memory. Read at server start. |
+| `OK_MCP_SESSION_TTL_MS` | How long an idle MCP HTTP session survives without traffic before the server closes it (default `1800000`, 30 minutes). Lower it to reclaim abandoned sessions sooner; a client that sends `DELETE /mcp` releases its slot immediately either way. Read at server start. |
 
 ## Semantic search
 

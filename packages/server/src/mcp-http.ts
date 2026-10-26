@@ -13,6 +13,7 @@ import {
   MCP_HOSTED_AGENT_HEADER,
   sanitizeClientName,
 } from './mcp/agent-identity.ts';
+import { DEFAULT_MCP_MAX_SESSIONS, DEFAULT_MCP_SESSION_TTL_MS } from './mcp-http-limits.ts';
 import { installJsonSchemaDialect } from './mcp/json-schema-dialect.ts';
 import { installPrettyZodErrors } from './mcp/pretty-zod-errors.ts';
 import { registerAllTools } from './mcp/tools/index.ts';
@@ -115,8 +116,8 @@ function createSessionServer(
 
 export function createMcpHttpHandler(opts: McpHttpHandlerOptions): McpHttpHandler {
   const sessions = new Map<string, McpHttpSession>();
-  const sessionTtlMs = opts.sessionTtlMs ?? 30 * 60 * 1000;
-  const maxSessions = opts.maxSessions ?? 100;
+  const sessionTtlMs = opts.sessionTtlMs ?? DEFAULT_MCP_SESSION_TTL_MS;
+  const maxSessions = opts.maxSessions ?? DEFAULT_MCP_MAX_SESSIONS;
 
   async function closeSession(sessionId: string, reason: string): Promise<void> {
     const session = sessions.get(sessionId);
